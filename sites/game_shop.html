@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameShop - Магазин игр и рулетка</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      :root {
+        --primary: #6c5ce7;
+        --secondary: #a29bfe;
+        --dark: #2d3436;
+        --light: #f5f6fa;
+        --success: #00b894;
+        --danger: #d63031;
+        --warning: #fdcb6e;
+      }
+
+      body {
+        background-color: #f8f9fa;
+        color: var(--dark);
+        line-height: 1.6;
+      }
+
+      header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 1.5rem 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+
+      .logo i {
+        color: var(--warning);
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+      }
+
+      nav a:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .balance {
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-title i {
+        color: var(--primary);
+      }
+
+      .games-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .game-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .game-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .game-img {
+        height: 180px;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .game-info {
+        padding: 1.5rem;
+      }
+
+      .game-title {
+        font-size: 1.4rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .game-desc {
+        color: #666;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+      }
+
+      .game-price {
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .btn {
+        display: inline-block;
+        background-color: var(--primary);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+      }
+
+      .btn:hover {
+        background-color: #5a4fcf;
+        transform: scale(1.05);
+      }
+
+      .btn-warning {
+        background-color: var(--warning);
+        color: var(--dark);
+      }
+
+      .btn-warning:hover {
+        background-color: #f7b84d;
+      }
+
+      .roulette-section {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      .roulette-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      .roulette-wheel {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: conic-gradient(
+          red 0deg 60deg,
+          black 60deg 120deg,
+          red 120deg 180deg,
+          black 180deg 240deg,
+          red 240deg 300deg,
+          black 300deg 360deg
+        );
+        position: relative;
+        transition: transform 3s cubic-bezier(0.2, 0.8, 0.3, 1);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .roulette-wheel::after {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 40px;
+        background-color: gold;
+        clip-path: polygon(50% 100%, 0 0, 100% 0);
+      }
+
+      .roulette-numbers {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .roulette-number {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-weight: 700;
+        color: white;
+      }
+
+      .red {
+        background-color: var(--danger);
+      }
+
+      .black {
+        background-color: var(--dark);
+      }
+
+      .zero {
+        background-color: var(--success);
+      }
+
+      .roulette-controls {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .bet-input {
+        padding: 0.8rem;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+        width: 150px;
+      }
+
+      .result {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-top: 1rem;
+        min-height: 30px;
+      }
+
+      .cards-game {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      .cards-container {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin: 2rem 0;
+        flex-wrap: wrap;
+      }
+
+      .card {
+        width: 100px;
+        height: 140px;
+        background-color: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border: 1px solid #eee;
+        cursor: pointer;
+        transition: all 0.3s;
+        user-select: none;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .card.red {
+        color: var(--danger);
+      }
+
+      .card.black {
+        color: var(--dark);
+      }
+
+      .card-back {
+        background: linear-gradient(45deg, var(--primary), var(--secondary));
+        color: white;
+        font-size: 1.5rem;
+      }
+
+      .game-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+      }
+
+      .stat {
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .stat-label {
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      footer {
+        background-color: var(--dark);
+        color: white;
+        text-align: center;
+        padding: 2rem;
+        margin-top: 3rem;
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 1rem;
+      }
+
+      .footer-links a {
+        color: #ddd;
+        text-decoration: none;
+      }
+
+      .footer-links a:hover {
+        color: white;
+      }
+
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        nav ul {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .roulette-wheel {
+          width: 250px;
+          height: 250px;
+        }
+
+        .games-grid {
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <i class="fas fa-gamepad"></i>
+        <span>GameShop</span>
+      </div>
+
+      <nav>
+        <ul>
+          <li><a href="#"><i class="fas fa-home"></i> Главная</a></li>
+          <li><a href="#"><i class="fas fa-shopping-cart"></i> Магазин</a></li>
+          <li><a href="#"><i class="fas fa-dice"></i> Рулетка</a></li>
+          <li><a href="#"><i class="fas fa-cards"></i> Карточные игры</a></li>
+        </ul>
+      </nav>
+
+      <div class="user-info">
+        <div class="balance">
+          <i class="fas fa-coins"></i> Баланс: <span id="userBalance">1250</span> монет
+        </div>
+        <button class="btn btn-warning" id="addCoinsBtn">
+          <i class="fas fa-plus"></i> Пополнить
+        </button>
+      </div>
+    </header>
+
+    <div class="container">
+      <h2 class="section-title">
+        <i class="fas fa-store"></i> Игры в магазине
+      </h2>
+
+      <div class="games-grid" id="gamesGrid">
+        <!-- Игры будут добавлены через JS -->
+      </div>
+
+      <div class="roulette-section">
+        <h2 class="section-title">
+          <i class="fas fa-dice"></i> Рулетка
+        </h2>
+
+        <div class="roulette-container">
+          <div class="roulette-wheel" id="rouletteWheel"></div>
+
+          <div class="roulette-numbers">
+            <div class="roulette-number zero">0</div>
+            <!-- Числа рулетки будут добавлены через JS -->
+          </div>
+
+          <div class="roulette-controls">
+            <input type="number" class="bet-input" id="betAmount" min="10" max="1000" value="100" placeholder="Сумма ставки">
+            <button class="btn" id="betRedBtn">
+              <i class="fas fa-square-full" style="color: #d63031;"></i> Ставка на красное
+            </button>
+            <button class="btn" id="betBlackBtn">
+              <i class="fas fa-square-full" style="color: #2d3436;"></i> Ставка на черное
+            </button>
+            <button class="btn btn-warning" id="spinRouletteBtn">
+              <i class="fas fa-play"></i> Крутить рулетку
+            </button>
+          </div>
+
+          <div class="result" id="rouletteResult"></div>
+        </div>
+      </div>
+
+      <div class="cards-game">
+        <h2 class="section-title">
+          <i class="fas fa-cards"></i> Карточная игра "Угадай цвет"
+        </h2>
+        <p>Выберите карту и попробуйте угадать её цвет (красный или черный).</p>
+
+        <div class="cards-container" id="cardsContainer">
+          <!-- Карточки будут добавлены через JS -->
+        </div>
+
+        <div class="game-controls" style="text-align: center;">
+          <button class="btn" id="guessRedBtn">
+            <i class="fas fa-heart" style="color: #d63031;"></i> Угадать красное
+          </button>
+          <button class="btn" id="guessBlackBtn">
+            <i class="fas fa-spade" style="color: #2d3436;"></i> Угадать черное
+          </button>
+          <button class="btn btn-warning" id="newGameBtn">
+            <i class="fas fa-redo"></i> Новая игра
+          </button>
+        </div>
+
+        <div class="game-stats">
+          <div class="stat">
+            <div class="stat-value" id="gamesPlayed">0</div>
+            <div class="stat-label">Сыграно игр</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="gamesWon">0</div>
+            <div class="stat-label">Побед</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="winRate">0%</div>
+            <div class="stat-label">Процент побед</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2023 GameShop - Магазин игр и развлечений. Все права защищены.</p>
+      <div class="footer-links">
+        <a href="#">Политика конфиденциальности</a>
+        <a href="#">Условия использования</a>
+        <a href="#">Поддержка</a>
+      </div>
+    </footer>
+
+    <script>
+      // Данные для магазина
+      const games = [
+        { id: 1, title: "Космические войны", desc: "Эпическая битва в космосе", price: 499, img: "space" },
+        { id: 2, title: "Футбол 2023", desc: "Симулятор футбола нового поколения", price: 799, img: "football" },
+        { id: 3, title: "Зомби апокалипсис", desc: "Выживание в мире зомби", price: 599, img: "zombie" },
+        { id: 4, title: "Гонки на выживание", desc: "Экстремальные гонки по бездорожью", price: 649, img: "racing" },
+        { id: 5, title: "Фэнтези RPG", desc: "Погрузитесь в мир магии и приключений", price: 899, img: "rpg" },
+        { id: 6, title: "Шахматы Про", desc: "Классическая игра с современной графикой", price: 299, img: "chess" }
+      ];
+
+      // Данные для рулетки
+      const rouletteNumbers = [
+        { number: 0, color: "green" },
+        { number: 32, color: "red" },
+        { number: 15, color: "black" },
+        { number: 19, color: "red" },
+        { number: 4, color: "black" },
+        { number: 21, color: "red" },
+        { number: 2, color: "black" },
+        { number: 25, color: "red" },
+        { number: 17, color: "black" },
+        { number: 34, color: "red" }
+      ];
+
+      // Данные для карточной игры
+      const cardSuits = ["♥", "♦", "♠", "♣"];
+      const cardValues = ["A", "K", "Q", "J", "10", "9", "8"];
+      let selectedCard = null;
+      let gamesPlayed = 0;
+      let gamesWon = 0;
+
+      // Инициализация при загрузке страницы
+      document.addEventListener('DOMContentLoaded', function() {
+        initializeShop();
+        initializeRoulette();
+        initializeCardsGame();
+        updateStats();
+      });
+
+      // Инициализация магазина
+      function initializeShop() {
+        const gamesGrid = document.getElementById('gamesGrid');
+
+        games.forEach(game => {
+          const gameCard = document.createElement('div');
+          gameCard.className = 'game-card';
+
+          // Выбор фонового изображения для игры
+          const bgColors = ["#6c5ce7", "#00b894", "#fd79a8", "#fdcb6e", "#a29bfe", "#e17055"];
+          const randomColor = bgColors[game.id % bgColors.length];
+
+          gameCard.innerHTML = `
+                                            <div class="game-img" style="background-color: ${randomColor}; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white;">
+                                                <i class="fas fa-${getGameIcon(game.img)}"></i>
+      </div>
+                                            <div class="game-info">
+                                                <h3 class="game-title">${game.title}</h3>
+                                                <p class="game-desc">${game.desc}</p>
+                                                <div class="game-price">${game.price} монет</div>
+                                                <button class="btn buy-btn" data-id="${game.id}" data-price="${game.price}">
+                                                    <i class="fas fa-shopping-cart"></i> Купить
+      </button>
+      </div>
+                                        `;
+
+          gamesGrid.appendChild(gameCard);
+        });
+
+        // Обработчики для кнопок покупки
+        document.querySelectorAll('.buy-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const gameId = this.getAttribute('data-id');
+            const price = parseInt(this.getAttribute('data-price'));
+            const balance = parseInt(document.getElementById('userBalance').textContent);
+
+            if (balance >= price) {
+              document.getElementById('userBalance').textContent = balance - price;
+              alert(`Вы успешно купили игру!`);
+            } else {
+              alert('Недостаточно монет для покупки!');
+            }
+          });
+        });
+      }
+
+      // Получение иконки для игры
+      function getGameIcon(imgType) {
+        switch(imgType) {
+          case 'space': return 'rocket';
+          case 'football': return 'futbol';
+          case 'zombie': return 'skull';
+          case 'racing': return 'car';
+          case 'rpg': return 'dragon';
+          case 'chess': return 'chess';
+          default: return 'gamepad';
+        }
+      }
+
+      // Инициализация рулетки
+      function initializeRoulette() {
+        const rouletteNumbersContainer = document.querySelector('.roulette-numbers');
+
+        // Добавляем числа рулетки
+        rouletteNumbers.forEach(item => {
+          if (item.number !== 0) {
+            const numberElement = document.createElement('div');
+            numberElement.className = `roulette-number ${item.color}`;
+            numberElement.textContent = item.number;
+            rouletteNumbersContainer.appendChild(numberElement);
+          }
+        });
+
+        // Обработчики для кнопок рулетки
+        document.getElementById('spinRouletteBtn').addEventListener('click', spinRoulette);
+        document.getElementById('betRedBtn').addEventListener('click', () => placeBet('red'));
+        document.getElementById('betBlackBtn').addEventListener('click', () => placeBet('black'));
+        document.getElementById('addCoinsBtn').addEventListener('click', addCoins);
+      }
+
+      // Размещение ставки
+      function placeBet(color) {
+        const betAmount = parseInt(document.getElementById('betAmount').value);
+        const balance = parseInt(document.getElementById('userBalance').textContent);
+
+        if (betAmount < 10) {
+          alert('Минимальная ставка - 10 монет!');
+          return;
+        }
+
+        if (betAmount > balance) {
+          alert('Недостаточно монет для ставки!');
+          return;
+        }
+        
+        document.getElementById('betRedBtn').classList.remove('active');
+        document.getElementById('betBlackBtn').classList.remove('active');
+
+        if (color === 'red') {
+          document.getElementById('betRedBtn').classList.add('active');
+        } else {
+          document.getElementById('betBlackBtn').classList.add('active');
+        }
+        document.getElementById('rouletteResult').textContent = `Ставка ${betAmount} монет на ${color === 'red' ? 'красное' : 'черное'}`;
+      }
+
+      // Вращение рулетки
+      function spinRoulette() {
+        const betAmount = parseInt(document.getElementById('betAmount').value);
+        const balance = parseInt(document.getElementById('userBalance').textContent);
+        const resultElement = document.getElementById('rouletteResult');
+
+        if (betAmount < 10) {
+          alert('Минимальная ставка - 10 монет!');
+          return;
+        }
+
+        if (betAmount > balance) {
+          alert('Недостаточно монет для ставки!');
+          return;
+        }
+
+        // Обновляем баланс
+        document.getElementById('userBalance').textContent = balance - betAmount;
+
+        // Анимация вращения рулетки
+        const wheel = document.getElementById('rouletteWheel');
+        const spins = 5 + Math.random() * 3; // 5-8 полных оборотов
+        const degrees = spins * 360 + Math.floor(Math.random() * 360);
+
+        wheel.style.transform = `rotate(${degrees}deg)`;
+
+        // Определяем результат через 3 секунды
+        setTimeout(() => {
+          const resultIndex = Math.floor(Math.random() * rouletteNumbers.length);
+          const result = rouletteNumbers[resultIndex];
+          const isWin = (result.color === 'red' && document.getElementById('betRedBtn').classList.contains('active')) ||
+                (result.color === 'black' && document.getElementById('betBlackBtn').classList.contains('active'));
+
+          let resultText = `Выпало: ${result.number} (${result.color === 'red' ? 'красное' : result.color === 'black' ? 'черное' : 'зеленое'})`;
+
+          if (result.color === 'green') {
+            resultText += ". Зеленое! Ставка возвращается.";
+            document.getElementById('userBalance').textContent = balance;
+          } else if (isWin) {
+            const winAmount = betAmount * 2;
+            document.getElementById('userBalance').textContent = balance + winAmount;
+            resultText += `. Вы выиграли ${winAmount} монет!`;
+          } else {
+            resultText += ". Вы проиграли.";
+          }
+
+          resultElement.textContent = resultText;
+
+          // Сбрасываем активные ставки
+          document.getElementById('betRedBtn').classList.remove('active');
+          document.getElementById('betBlackBtn').classList.remove('active');
+
+        }, 3000);
+
+        // Сбрасываем результат
+        resultElement.textContent = "Рулетка вращается...";
+      }
+
+      // Инициализация карточной игры
+      function initializeCardsGame() {
+        generateCards();
+
+        // Обработчики для кнопок карточной игры
+        document.getElementById('guessRedBtn').addEventListener('click', () => guessCardColor('red'));
+        document.getElementById('guessBlackBtn').addEventListener('click', () => guessCardColor('black'));
+        document.getElementById('newGameBtn').addEventListener('click', generateCards);
+      }
+
+      // Генерация карт
+      function generateCards() {
+        const cardsContainer = document.getElementById('cardsContainer');
+        cardsContainer.innerHTML = '';
+
+        // Создаем 6 карт
+        for (let i = 0; i < 6; i++) {
+          const card = document.createElement('div');
+          card.className = 'card card-back';
+          card.textContent = '?';
+          card.dataset.index = i;
+
+          // Случайно определяем цвет карты (красный или черный)
+          const isRed = Math.random() > 0.5;
+          const suit = isRed ? 
+                cardSuits[Math.floor(Math.random() * 2)] : // ♥ или ♦
+          cardSuits[2 + Math.floor(Math.random() * 2)]; // ♠ или ♣
+
+          const value = cardValues[Math.floor(Math.random() * cardValues.length)];
+
+          // Сохраняем данные карты
+          card.dataset.suit = suit;
+          card.dataset.value = value;
+          card.dataset.color = isRed ? 'red' : 'black';
+
+          // Обработчик клика по карте
+          card.addEventListener('click', function() {
+            if (selectedCard) {
+              selectedCard.classList.remove('selected');
+            }
+
+            this.classList.add('selected');
+            selectedCard = this;
+
+            // Показываем выбранную карту
+            document.querySelectorAll('.card').forEach(c => {
+              if (c !== this) {
+                c.textContent = '?';
+                c.className = 'card card-back';
+              }
+            });
+
+            this.textContent = `${value}${suit}`;
+            this.classList.remove('card-back');
+            this.classList.add('card', isRed ? 'red' : 'black');
+          });
+
+          cardsContainer.appendChild(card);
+        }
+
+        selectedCard = null;
+      }
+
+      // Угадывание цвета карты
+      function guessCardColor(color) {
+        if (!selectedCard) {
+          alert('Сначала выберите карту!');
+          return;
+        }
+
+        gamesPlayed++;
+        const isCorrect = selectedCard.dataset.color === color;
+
+        if (isCorrect) {
+          gamesWon++;
+          alert(`Правильно! Карта ${selectedCard.dataset.color === 'red' ? 'красная' : 'черная'}. Вы выиграли 50 монет!`);
+
+          // Добавляем монеты за победу
+          const balance = parseInt(document.getElementById('userBalance').textContent);
+          document.getElementById('userBalance').textContent = balance + 50;
+        } else {
+          alert(`Неправильно! Карта ${selectedCard.dataset.color === 'red' ? 'красная' : 'черная'}.`);
+        }
+
+        updateStats();
+        generateCards();
+      }
+
+      // Обновление статистики
+      function updateStats() {
+        document.getElementById('gamesPlayed').textContent = gamesPlayed;
+        document.getElementById('gamesWon').textContent = gamesWon;
+        const winRate = gamesPlayed > 0 ? Math.round((gamesWon / gamesPlayed) * 100) : 0;
+        document.getElementById('winRate').textContent = `${winRate}%`;
+      }
+
+      // Пополнение баланса
+      function addCoins() {
+        const balance = parseInt(document.getElementById('userBalance').textContent);
+        document.getElementById('userBalance').textContent = balance + 500;
+        alert('Баланс пополнен на 500 монет!');
+      }
+    </script>
+  </body>
+</html>

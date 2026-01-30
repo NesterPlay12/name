@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Учебный To-Do List | Основы JavaScript</title>
+    <style>
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      
+      body {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #333;
+      }
+      
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        overflow: hidden;
+        padding: 25px;
+      }
+      
+      header {
+        text-align: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px, solid #f0f0f0;
+      }
+      
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+      }
+      
+      .subtitle {
+        color: #7f8c8d;
+        font-size: 14px;
+      }
+      
+      .input-section {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      #taskInput {
+        flex: 1;
+        padding: 12px 15px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+      }
+      
+      #taskInput:focus {
+        outline: none;
+        border-color: #3498db;
+      }
+      
+      button {
+        padding: 12px 20px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s, transform 0.2s;
+      }
+      
+      button:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      .filters {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .filter-btn {
+        background: #ecf0f1;
+        color: #34495e;
+      }
+
+      .filter-btn.active {
+        background: #2ecc71;
+        color: white;
+      }
+
+      #taskList {
+        list-style: none;
+        margin-bottom: 20px;
+      }
+
+      .task-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin-bottom: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 5px solid #3498db;
+        transition: all 0.3s;
+        animation: fadeIn 0.5s;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .task-item:hover {
+        background: #e8f4fc;
+      }
+
+      .task-item.completed {
+        opacity: 0.7;
+        border-left-color: #2ecc71;
+        text-decoration: line-through;
+        color: #7f8c8d;
+      }
+
+      .task-checkbox {
+        width: 20px;
+        height: 20px;
+        margin-right: 15px;
+        cursor: pointer;
+      }
+
+      .task-text {
+        flex: 1;
+        font-size: 16px;
+      }
+
+      .delete-btn {
+        background: #e74c3c;
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .delete-btn:hover {
+        background: #c0392b;
+      }
+
+      .stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .stats p {
+        font-weight: bold;
+      }
+
+      #clearCompleted {
+        background: #95a5a6;
+      }
+
+      #clearCompleted:hover {
+        background: #7f8c8d;
+      }
+
+      .js-concepts {
+        background: #2c3e50;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+      }
+
+      .js-concepts h3 {
+        color: #3498db;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      .concepts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+      }
+
+      .concept {
+        background: #34495e;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 14px;
+        transition: transform 0.3s;
+      }
+
+      .concept:hover {
+        transform: scale(1.05);
+        background: #3d566e;
+      }
+
+      .explanation {
+        font-size: 13px;
+        color: #bdc3c7;
+        margin-top: 15px;
+        line-height: 1.5;
+        text-align: center;
+      }
+
+      @media (max-width: 600px) {
+        .input-section {
+          flex-direction: column;
+        }
+
+        .filters {
+          justify-content: center;
+        }
+
+        .stats {
+          flex-direction: column;
+          text-align: center;
+          gap: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Учебный To-Do List</h1>
+        <p class="subtitle">Изучаем основы JavaScript на практике</p>
+      </header>
+
+      <main> 
+        <div class="input-section">
+          <input type="text" id="taskInput" placeholder="Введите задачу и нажмите Enter или кнопку...">
+            <button id="addBtn">Добавить задачу</button>
+        </div>
+
+        <div class="filters">
+          <button class="filter-btn active" data-filter="all">Все задачи</button>
+          <button class="filter-btn" data-filter="active">Активные</button>
+          <button class="filter-btn" data-filter="completed">Завершенные</button>
+        </div>
+        
+        <ul id="taskList">
+           <!-- Задачи будут добавляться через JavaScript -->
+        </ul>
+          
+        <div class="stats">
+          <div>
+            <p>Всего задач: <span id="totalTasks">0</span></p>
+            <p>Выполнено: <span id="completedTasks">0</span></p>
+          </div>
+          <button id="clearCompleted">Удалить выполненные</button>
+        </div>
+        
+        <div class="js-concepts">
+          <h3>✅ Осваиваем в этом проекте:</h3>
+          <div class="concepts-grid">
+            <div class="concept">Переменные (let, const)</div>
+            <div class="concept">Работа с DOM</div>
+            <div class="concept">Обработчики событий</div>
+            <div class="concept">Массивы и объекты</div>
+            <div class="concept">Функции (обычные, стрелочные)</div>
+            <div class="concept">Методы массивов (push, filter, forEach)</div>
+            <div class="concept">Условия if/else</div>
+            <div class="concept">Локальное хранилище</div>
+          </div>
+          <p class="explanation">
+            Все действия (добавление, удаление, отметка о выполнении) происходят через JavaScript. 
+            Задачи сохраняются в браузере и не пропадут после обновления страницы.
+          </p>
+        </div>
+      </main>
+    </div>
+    
+    <script>
+      // 1. ОБЪЯВЛЕНИЕ ПЕРЕМЕННЫХ И КОНСТАНТ (основа любого скрипта)
+      const taskInput = document.getElementById('taskInput');
+      const addBtn = document.getElementById('addBtn');
+      const taskList = document.getElementById('taskList');
+      const totalTasksEl = document.getElementById('totalTasks');
+      const completedTasksEl = document.getElementById('completedTasks');
+      const clearCompletedBtn = document.getElementById('clearCompleted');
+      const filterButtons = document.querySelectorAll('.filter-btn');
+
+      // 2. МАССИВ ДЛЯ ХРАНЕНИЯ ЗАДАЧ (основная структура данных)
+      let tasks = [];
+
+      // 3. ФУНКЦИЯ ДОБАВЛЕНИЯ ЗАДАЧИ (основная логика)
+      function addTask() {
+        const taskText = taskInput.value.trim(); // Получаем значение из поля ввода
+
+        // Проверка на пустую строку (защита от дурака)
+        if (taskText === '') {
+          alert('Пожалуйста, введите текст задачи!');
+          return; // Прерываем выполнение функции
+        }
+
+        // Создаем объект задачи (работа с объектами)
+        const newTask = {
+          id: Date.now(), // Уникальный ID на основе времени
+          text: taskText,
+          completed: false,
+          date: new Date().toLocaleDateString() // Добавляем дату
+        };
+
+        // Добавляем задачу в массив (метод массива push)
+        tasks.push(newTask);
+
+        // Очищаем поле ввода
+        taskInput.value = '';
+
+        // Сохраняем в localStorage (работа с браузерным хранилищем)
+        saveTasks();
+
+        // Обновляем отображение
+        renderTasks();
+
+        // Фокус обратно на поле ввода для удобства
+        taskInput.focus();
+      }
+
+      // 4. ФУНКЦИЯ ОТМЕТКИ ВЫПОЛНЕНИЯ
+      function toggleTask(id) {
+        // Находим задачу по ID (метод массива find)
+        const task = tasks.find(task => task.id === id);
+
+        // Меняем статус на противоположный (логическое НЕ)
+        if (task) {
+          task.completed = !task.completed;
+          saveTasks();
+          renderTasks();
+        }
+      }
+
+      // 5. ФУНКЦИЯ УДАЛЕНИЯ ЗАДАЧИ
+      function deleteTask(id) {
+        // Фильтруем массив, оставляя все задачи кроме удаляемой (метод filter)
+        tasks = tasks.filter(task => task.id !== id);
+        saveTasks();
+        renderTasks();
+      }
+
+      // 6. ФУНКЦИЯ ОТОБРАЖЕНИЯ ЗАДАЧ (работа с DOM)
+      function renderTasks(filter = 'all') {
+        // Очищаем список перед рендером
+        taskList.innerHTML = '';
+
+        // Фильтрация задач в зависимости от выбранного фильтра
+        let filteredTasks = tasks;
+        if (filter === 'active') {
+          filteredTasks = tasks.filter(task => !task.completed);
+        } else if (filter === 'completed') {
+          filteredTasks = tasks.filter(task => task.completed);
+        }
+
+        // Перебираем отфильтрованные задачи и создаем элементы (метод forEach)
+        filteredTasks.forEach(task => {
+          const li = document.createElement('li'); // Создание элемента
+          li.className = `task-item ${task.completed ? 'completed' : ''}`; // Классы по условию
+          li.setAttribute('data-id', task.id); // Добавляем data-атрибут
+
+          // Внутренний HTML элемента (шаблонная строка)
+          li.innerHTML = `
+                    <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
+                    <span class="task-text">${task.text}</span>
+                    <small style="color: #7f8c8d; margin-right: 10px;">${task.date}</small>
+                    <button class="delete-btn">Удалить</button>
+                `;
+
+          // Добавляем элемент в список (работа с DOM)
+          taskList.appendChild(li);
+
+          // 7. НАЗНАЧЕНИЕ ОБРАБОТЧИКОВ СОБЫТИЙ на элементы
+          const checkbox = li.querySelector('.task-checkbox');
+          const deleteBtn = li.querySelector('.delete-btn');
+
+          // Обработчик для чекбокса (отметка выполнения)
+          checkbox.addEventListener('click', () => toggleTask(task.id));
+
+          // Обработчик для кнопки удаления
+          deleteBtn.addEventListener('click', () => deleteTask(task.id));
+
+          // Дополнительно: клик по тексту задачи тоже отмечает ее
+          const taskText = li.querySelector('.task-text');
+          taskText.addEventListener('click', () => toggleTask(task.id));
+        });
+
+        // Обновляем счетчики
+        updateStats();
+      }
+
+      // 8. ФУНКЦИЯ ОБНОВЛЕНИЯ СТАТИСТИКИ
+      function updateStats() {
+        const total = tasks.length;
+        const completed = tasks.filter(task => task.completed).length;
+
+        totalTasksEl.textContent = total;
+        completedTasksEl.textContent = completed;
+      }
+
+      // 9. ФУНКЦИЯ СОХРАНЕНИЯ В LOCALSTORAGE (работа с Web API)
+      function saveTasks() {
+        // Преобразуем массив в строку JSON для хранения
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+      }
+
+      // 10. ФУНКЦИЯ ЗАГРУЗКИ ИЗ LOCALSTORAGE
+      function loadTasks() {
+        const savedTasks = localStorage.getItem('tasks');
+
+        // Если есть сохраненные задачи, парсим их из JSON
+        if (savedTasks) {
+          tasks = JSON.parse(savedTasks);
+          renderTasks();
+        }
+      }
+
+      // 11. ФУНКЦИЯ ОЧИСТКИ ВЫПОЛНЕННЫХ ЗАДАЧ
+      function clearCompletedTasks() {
+        // Оставляем только незавершенные задачи
+        tasks = tasks.filter(task => !task.completed);
+        saveTasks();
+        renderTasks();
+      }
+
+      // 12. ФУНКЦИЯ ФИЛЬТРАЦИИ ЗАДАЧ
+      function setFilter(filter) {
+        // Обновляем активную кнопку фильтра
+        filterButtons.forEach(btn => {
+          if (btn.dataset.filter === filter) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+
+        // Рендерим задачи с учетом фильтра
+        renderTasks(filter);
+      }
+
+      // 13. ОСНОВНОЙ КОД - ИНИЦИАЛИЗАЦИЯ И НАЗНАЧЕНИЕ СОБЫТИЙ
+      document.addEventListener('DOMContentLoaded', () => {
+        // Загружаем задачи при загрузке страницы
+        loadTasks();
+
+        // Обработчик для кнопки добавления
+        addBtn.addEventListener('click', addTask);
+
+        // Обработчик для поля ввода (добавление по Enter)
+        taskInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            addTask();
+          }
+        });
+
+        // Обработчик для очистки выполненных задач
+        clearCompletedBtn.addEventListener('click', clearCompletedTasks);
+
+        // Обработчики для кнопок фильтрации
+        filterButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const filter = btn.dataset.filter;
+            setFilter(filter);
+          });
+        });
+
+        // Пример работы с массивами - начальные задачи для демонстрации
+        if (tasks.length === 0) {
+          const demoTasks = [
+            { id: 1, text: 'Изучить основы JavaScript', completed: true, date: 'Сегодня' },
+            { id: 2, text: 'Попрактиковаться с DOM', completed: false, date: 'Сегодня' },
+            { id: 3, text: 'Создать свой первый проект', completed: false, date: 'Завтра' }
+          ];
+          tasks = demoTasks;
+          saveTasks();
+          renderTasks();
+        }
+      });
+
+      // 14. ДОПОЛНИТЕЛЬНО: Пример работы с объектом Date и строками
+      console.log('Проект загружен! Текущая дата:', new Date().toLocaleDateString());
+      console.log('Используемые методы массивов:', ['push', 'filter', 'find', 'forEach'].join(', '));
+    </script>
+  </body>
+</html>
+ 

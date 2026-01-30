@@ -1,0 +1,75 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+h1 {
+  color: #2196F3;
+}
+
+h2 {
+  color: #333;
+  font-size: 18px;
+}
+
+/* Стили для кнопок */
+button {
+  background: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+button:hover {
+  background: #1976D2;
+}
+
+/* Поле ввода */
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* Счетчик */
+.counter {
+  font-size: 40px;
+  text-align: center;
+  margin: 20px 0;
+  color: #2196F3;
+}
+
+/* Список */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: #f9f9f9;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.section {
+  margin-bottom: 30px;
+  padding: 15px;
+  background: #fafafa;
+  border-radius: 8px;
+}
